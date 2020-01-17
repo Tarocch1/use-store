@@ -10,6 +10,9 @@ export interface Models {
 export interface SetModel {
   (model: new () => any): void;
 }
+export interface GetModel {
+  <T>(model: new () => T): T;
+}
 export interface UseModel {
   <T>(model: new () => T, noRender?: boolean): T;
 }
@@ -34,6 +37,10 @@ export const setModel: SetModel = model => {
     },
   });
   models[model.name] = { proxy, setters: [] };
+};
+
+export const getModel: GetModel = model => {
+  return models[model.name].proxy;
 };
 
 export const useModel: UseModel = (model, noRender = false) => {
