@@ -1,7 +1,8 @@
 import { useState, useEffect, Dispatch } from 'react';
 
 export interface Model {
-  proxy: any;
+  instance: any;
+  state: any;
   setters: Dispatch<any>[];
 }
 export interface Models {
@@ -24,23 +25,24 @@ export const setModel: SetModel = model => {
     throw new Error('Model must be a constructor');
   }
   if (model.name in models) return;
-  const proxy = new Proxy(new model(), {
-    get: function(target, prop, receiver) {
-      if (typeof target[prop] === 'function') {
-        return target[prop].bind(receiver);
-      }
-      return target[prop];
-    },
-    set: function(target, prop, value) {
-      target[prop] = value;
-      const { setters } = models[model.name];
-      setters.forEach(setter => {
-        setter({ [prop]: value });
+  const instance = new model();
+  const state: any = {};
+  for (let key in instance) {
+    if (typeof instance[key] !== 'function') {
+      state[key] = instance[key];
+      Object.defineProperty(instance, key, {
+        get: function() {
+          return models[model.name].state[key];
+        },
+        set: function(value) {
+          models[model.name].state[key] = value;
+          const { setters } = models[model.name];
+          setters.forEach(setter => setter(models[model.name].state));
+        },
       });
-      return true;
-    },
-  });
-  models[model.name] = { proxy, setters: [] };
+    }
+  }
+  models[model.name] = { instance, state, setters: [] };
 };
 
 export const getModel: GetModel = model => {
@@ -50,7 +52,7 @@ export const getModel: GetModel = model => {
   if (!(model.name in models)) {
     throw new Error('Model is not set');
   }
-  return models[model.name].proxy;
+  return models[model.name].instance;
 };
 
 export const useModel: UseModel = (model, noRender = false) => {
@@ -61,7 +63,7 @@ export const useModel: UseModel = (model, noRender = false) => {
     throw new Error('Model is not set');
   }
   const [, setState] = useState();
-  const { proxy, setters } = models[model.name];
+  const { instance, setters } = models[model.name];
   useEffect(() => {
     if (noRender) return;
     setters.push(setState);
@@ -70,5 +72,5 @@ export const useModel: UseModel = (model, noRender = false) => {
       setters.splice(index, 1);
     };
   }, []);
-  return proxy;
+  return instance;
 };

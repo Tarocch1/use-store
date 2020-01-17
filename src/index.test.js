@@ -8,9 +8,9 @@ configure({ adapter: new Adapter() });
 test('Basic Usage', () => {
   class CounterModel1 {
     count = 0;
-    add() {
+    add = () => {
       this.count++;
-    }
+    };
   }
   setModel(CounterModel1);
   function Counter() {
@@ -33,10 +33,10 @@ test('Basic Usage', () => {
 test('Async Function', done => {
   class CounterModel2 {
     count = 0;
-    async add() {
+    add = async () => {
       await new Promise(resolve => setTimeout(resolve, 1000));
       this.count++;
-    }
+    };
   }
   setModel(CounterModel2);
   function Counter() {
@@ -62,9 +62,9 @@ test('Async Function', done => {
 test('noRender', () => {
   class CounterModel3 {
     count = 0;
-    add() {
+    add = () => {
       this.count++;
-    }
+    };
   }
   setModel(CounterModel3);
   function Counter() {
@@ -87,16 +87,16 @@ test('noRender', () => {
 test('getModel', () => {
   class OtherModel {
     count = 0;
-    add() {
+    add = () => {
       this.count++;
-    }
+    };
   }
   class CounterModel4 {
     count = 0;
-    add() {
+    add = () => {
       const otherModel = getModel(OtherModel);
       otherModel.add();
-    }
+    };
   }
   setModel(CounterModel4);
   setModel(OtherModel);
@@ -129,9 +129,9 @@ test('Error', () => {
 
   class CounterModel5 {
     count = 0;
-    add() {
+    add = () => {
       this.count++;
-    }
+    };
   }
 
   expect(() => {

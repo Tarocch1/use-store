@@ -19,10 +19,10 @@ import { setModel, useModel } from '@tarocch1/use-model';
 
 class CounterModel {
   count = 0;
-  add() {
+  add = () => {
     this.count++;
   }
-  async addAsync() {
+  addAsync = async () => {
     await new Promise(resolve => setTimeout(resolve, 1000));
     this.count++;
   }
@@ -57,13 +57,13 @@ import { setModel, getModel, useModel } from '@tarocch1/use-model';
 
 class OtherModel {
   count = 0;
-  add() {
+  add = () => {
     this.count++;
   }
 }
 class CounterModel {
   count = 0;
-  add() {
+  add = () => {
     const otherModel = getModel(OtherModel);
     otherModel.add();
   }
