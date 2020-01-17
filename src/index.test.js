@@ -6,15 +6,15 @@ import { setModel, getModel, useModel } from './index';
 configure({ adapter: new Adapter() });
 
 test('Basic Usage', () => {
-  class CounterModel {
+  class CounterModel1 {
     count = 0;
     add() {
       this.count++;
     }
   }
-  setModel(CounterModel);
+  setModel(CounterModel1);
   function Counter() {
-    const counterModel = useModel(CounterModel);
+    const counterModel = useModel(CounterModel1);
     return (
       <>
         <div id="count">{counterModel.count}</div>
@@ -31,16 +31,16 @@ test('Basic Usage', () => {
 });
 
 test('Async Function', done => {
-  class CounterModel {
+  class CounterModel2 {
     count = 0;
     async add() {
       await new Promise(resolve => setTimeout(resolve, 1000));
       this.count++;
     }
   }
-  setModel(CounterModel);
+  setModel(CounterModel2);
   function Counter() {
-    const counterModel = useModel(CounterModel);
+    const counterModel = useModel(CounterModel2);
     return (
       <>
         <div id="count">{counterModel.count}</div>
@@ -60,15 +60,15 @@ test('Async Function', done => {
 });
 
 test('noRender', () => {
-  class CounterModel {
+  class CounterModel3 {
     count = 0;
     add() {
       this.count++;
     }
   }
-  setModel(CounterModel);
+  setModel(CounterModel3);
   function Counter() {
-    const counterModel = useModel(CounterModel, true);
+    const counterModel = useModel(CounterModel3, true);
     return (
       <>
         <div id="count">{counterModel.count}</div>
@@ -91,17 +91,17 @@ test('getModel', () => {
       this.count++;
     }
   }
-  class CounterModel {
+  class CounterModel4 {
     count = 0;
     add() {
       const otherModel = getModel(OtherModel);
       otherModel.add();
     }
   }
-  setModel(CounterModel);
+  setModel(CounterModel4);
   setModel(OtherModel);
   function Counter() {
-    const counterModel = useModel(CounterModel);
+    const counterModel = useModel(CounterModel4);
     const otherModel = useModel(OtherModel);
     return (
       <>
@@ -116,4 +116,25 @@ test('getModel', () => {
   expect(wrapper.find('#count').text()).toEqual('0');
   wrapper.find('button').simulate('click');
   expect(wrapper.find('#count').text()).toEqual('1');
+});
+
+test('Error', () => {
+  expect(() => {
+    setModel('Not a model');
+  }).toThrow();
+
+  expect(() => {
+    useModel('Not a model');
+  }).toThrow();
+
+  class CounterModel5 {
+    count = 0;
+    add() {
+      this.count++;
+    }
+  }
+
+  expect(() => {
+    useModel(CounterModel5);
+  }).toThrow();
 });

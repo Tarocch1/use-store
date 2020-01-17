@@ -20,6 +20,10 @@ export interface UseModel {
 const models: Models = {};
 
 export const setModel: SetModel = model => {
+  if (typeof model !== 'function') {
+    throw new Error('Model must be a constructor');
+  }
+  if (model.name in models) return;
   const proxy = new Proxy(new model(), {
     get: function(target, prop, receiver) {
       if (typeof target[prop] === 'function') {
@@ -40,10 +44,22 @@ export const setModel: SetModel = model => {
 };
 
 export const getModel: GetModel = model => {
+  if (typeof model !== 'function') {
+    throw new Error('Model must be a constructor');
+  }
+  if (!(model.name in models)) {
+    throw new Error('Model is not set');
+  }
   return models[model.name].proxy;
 };
 
 export const useModel: UseModel = (model, noRender = false) => {
+  if (typeof model !== 'function') {
+    throw new Error('Model must be a constructor');
+  }
+  if (!(model.name in models)) {
+    throw new Error('Model is not set');
+  }
   const [, setState] = useState();
   const { proxy, setters } = models[model.name];
   useEffect(() => {
