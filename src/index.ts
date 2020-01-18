@@ -45,7 +45,7 @@ export const getModel: GetModel = model => {
   if (typeof model !== 'object') {
     throw new Error('Model must be an object');
   }
-  if (!models.has(model as any)) {
+  if (!models.has(model)) {
     throw new Error('Model is not set');
   }
   return models.get(model)!.model;
@@ -55,7 +55,7 @@ export const useModel: UseModel = (model, noRender = false) => {
   if (typeof model !== 'object') {
     throw new Error('Model must be an object');
   }
-  if (!models.has(model as any)) {
+  if (!models.has(model)) {
     throw new Error('Model is not set');
   }
   const [, setState] = useState();
