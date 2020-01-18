@@ -37,7 +37,7 @@ export const setModel: SetModel = model => {
         set: function(value) {
           models[model.name].state[key] = value;
           const { setters } = models[model.name];
-          setters.forEach(setter => setter(models[model.name].state));
+          setters.forEach(setter => setter({ ...models[model.name].state }));
         },
       });
     }
