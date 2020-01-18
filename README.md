@@ -28,15 +28,17 @@ class CounterModel {
   }
 }
 
-setModel(CounterModel);
+const counterModel = new CounterModel();
+
+setModel(counterModel);
 
 function Counter() {
-  const counter = useModel(CounterModel);
+  const _counterModel = useModel(counterModel);
   return (
     <>
-      Count: {counter.count}
-      <button onClick={counter.add}>+</button>
-      <button onClick={counter.addAsync}>+ async</button>
+      Count: {_counterModel.count}
+      <button onClick={_counterModel.add}>+</button>
+      <button onClick={_counterModel.addAsync}>+ async</button>
     </>
   );
 }
@@ -44,13 +46,13 @@ function Counter() {
 
 ## Api
 
-### setModel(Model)
+### setModel(model)
 
-初始化一个模型，接受一个构造函数作为参数。所有模型都应且仅应初始化一次，才可以使用。
+初始化一个模型，接收一个模型实例作为参数。所有模型都应且仅应初始化一次，才可以使用。
 
-### getModel(Model)
+### getModel(model)
 
-用于在模型中获取其他模型, 接受一个构造函数作为参数。该函数只应在模型中使用，在组件中时应用 `useModel` 。
+用于在模型中获取其他模型, 接收一个模型实例（与初始化时相同的实例）作为参数。该函数只应在模型中使用，在组件中时应用 `useModel` 。
 
 ```tsx
 import { setModel, getModel, useModel } from '@tarocch1/use-model';
@@ -61,32 +63,34 @@ class OtherModel {
     this.count++;
   }
 }
+const otherModel = new OtherModel();
 class CounterModel {
   count = 0;
   add = () => {
-    const otherModel = getModel(OtherModel);
-    otherModel.add();
+    const _otherModel = getModel(otherModel);
+    _otherModel.add();
   }
 }
+const counterModel = new CounterModel();
 
-setModel(CounterModel);
-setModel(OtherModel);
+setModel(otherModel);
+setModel(counterModel);
 
 function Counter() {
-  const counterModel = useModel(CounterModel);
-  const otherModel = useModel(OtherModel);
+  const _counterModel = useModel(counterModel);
+  const _otherModel = useModel(otherModel);
   return (
     <>
-      Count: {otherModel.count}
-      <button onClick={counterModel.add}>+</button>
+      Count: {_otherModel.count}
+      <button onClick={_counterModel.add}>+</button>
     </>
   );
 }
 ```
 
-### useModel(Model, noRender = false)
+### useModel(model, noRender = false)
 
-获取模型的Hook，在组件中使用，返回模型初始化后的实例。接收两个参数：第一个参数为模型构造函数；第二个参数指定是否接收数据变化并重新渲染，当设置为 `true` 时，组件不会重新渲染，默认为 `false` ，当某个组件仅需要访问模型方法而不需要绑定模型数据时，可以使用该选项优化性能。
+获取模型的Hook，在组件中使用，返回模型初始化后的实例。接收两个参数：第一个参数为模型实例（与初始化时相同的实例）；第二个参数指定是否接收数据变化并重新渲染，当设置为 `true` 时，组件不会重新渲染，默认为 `false` ，当某个组件仅需要访问模型方法而不需要绑定模型数据时，可以使用该选项优化性能。
 
 ## Credit
 
