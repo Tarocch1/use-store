@@ -1,12 +1,9 @@
 import { useState, useEffect, Dispatch } from 'react';
 
-export interface Model {
+interface Model {
   model: any;
   state: any;
   setters: Dispatch<any>[];
-}
-export interface Models {
-  [name: string]: Model;
 }
 export interface SetModel {
   (model: any): void;
@@ -18,56 +15,51 @@ export interface UseModel {
   <T>(model: T, noRender?: boolean): T;
 }
 
-const models: Models = {};
-const names: WeakMap<any, string> = new WeakMap();
+const models: WeakMap<any, Model> = new WeakMap();
 
 export const setModel: SetModel = model => {
   if (typeof model !== 'object') {
     throw new Error('Model must be an object');
   }
-  if (names.has(model)) return;
-  const name = String(Math.random());
-  names.set(model, name);
+  if (models.has(model)) return;
   const state: any = {};
   for (let key in model) {
     if (typeof model[key] !== 'function') {
       state[key] = model[key];
       Object.defineProperty(model, key, {
         get: function() {
-          return models[name].state[key];
+          return models.get(model)!.state[key];
         },
         set: function(value) {
-          models[name].state[key] = value;
-          const { setters } = models[name];
-          setters.forEach(setter => setter({ ...models[name].state }));
+          const { state, setters } = models.get(model)!;
+          state[key] = value;
+          setters.forEach(setter => setter({ ...state }));
         },
       });
     }
   }
-  models[name] = { model, state, setters: [] };
+  models.set(model, { model, state, setters: [] });
 };
 
 export const getModel: GetModel = model => {
   if (typeof model !== 'object') {
     throw new Error('Model must be an object');
   }
-  if (!names.has(model as any)) {
+  if (!models.has(model as any)) {
     throw new Error('Model is not set');
   }
-  const name = names.get(model as any);
-  return models[name!].model;
+  return models.get(model)!.model;
 };
 
 export const useModel: UseModel = (model, noRender = false) => {
   if (typeof model !== 'object') {
     throw new Error('Model must be an object');
   }
-  if (!names.has(model as any)) {
+  if (!models.has(model as any)) {
     throw new Error('Model is not set');
   }
-  const name = names.get(model as any);
   const [, setState] = useState();
-  const { setters } = models[name!];
+  const { setters } = models.get(model)!;
   useEffect(() => {
     if (noRender) return;
     setters.push(setState);
