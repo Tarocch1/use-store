@@ -12,14 +12,15 @@ test('Basic Usage', () => {
       this.count++;
     };
   }
-  setModel(CounterModel1);
+  const counterModel1 = new CounterModel1();
+  setModel(counterModel1);
   function Counter() {
-    const counterModel = useModel(CounterModel1);
+    const _counterModel = useModel(counterModel1);
     return (
       <>
-        <div id="count">{counterModel.count}</div>
+        <div id="count">{_counterModel.count}</div>
         <div>
-          <button onClick={counterModel.add}>add</button>
+          <button onClick={_counterModel.add}>add</button>
         </div>
       </>
     );
@@ -38,14 +39,15 @@ test('Async Function', done => {
       this.count++;
     };
   }
-  setModel(CounterModel2);
+  const counterModel2 = new CounterModel2();
+  setModel(counterModel2);
   function Counter() {
-    const counterModel = useModel(CounterModel2);
+    const _counterModel = useModel(counterModel2);
     return (
       <>
-        <div id="count">{counterModel.count}</div>
+        <div id="count">{_counterModel.count}</div>
         <div>
-          <button onClick={counterModel.add}>add</button>
+          <button onClick={_counterModel.add}>add</button>
         </div>
       </>
     );
@@ -66,14 +68,15 @@ test('noRender', () => {
       this.count++;
     };
   }
-  setModel(CounterModel3);
+  const counterModel3 = new CounterModel3();
+  setModel(counterModel3);
   function Counter() {
-    const counterModel = useModel(CounterModel3, true);
+    const _counterModel = useModel(counterModel3, true);
     return (
       <>
-        <div id="count">{counterModel.count}</div>
+        <div id="count">{_counterModel.count}</div>
         <div>
-          <button onClick={counterModel.add}>add</button>
+          <button onClick={_counterModel.add}>add</button>
         </div>
       </>
     );
@@ -91,23 +94,25 @@ test('getModel', () => {
       this.count++;
     };
   }
+  const otherModel = new OtherModel();
   class CounterModel4 {
     count = 0;
     add = () => {
-      const otherModel = getModel(OtherModel);
-      otherModel.add();
+      const _otherModel = getModel(otherModel);
+      _otherModel.add();
     };
   }
-  setModel(CounterModel4);
-  setModel(OtherModel);
+  const counterModel4 = new CounterModel4();
+  setModel(otherModel);
+  setModel(counterModel4);
   function Counter() {
-    const counterModel = useModel(CounterModel4);
-    const otherModel = useModel(OtherModel);
+    const _otherModel = useModel(otherModel);
+    const _counterModel = useModel(counterModel4);
     return (
       <>
-        <div id="count">{otherModel.count}</div>
+        <div id="count">{_otherModel.count}</div>
         <div>
-          <button onClick={counterModel.add}>add</button>
+          <button onClick={_counterModel.add}>add</button>
         </div>
       </>
     );
@@ -134,7 +139,9 @@ test('Error', () => {
     };
   }
 
+  const counterModel5 = new CounterModel5();
+
   expect(() => {
-    useModel(CounterModel5);
+    useModel(counterModel5);
   }).toThrow();
 });
