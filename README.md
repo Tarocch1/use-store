@@ -5,6 +5,7 @@
 [![npm](https://img.shields.io/npm/v/@tarocch1/use-model)](https://www.npmjs.com/package/@tarocch1/use-model)
 [![npm bundle size](https://img.shields.io/bundlephobia/min/@tarocch1/use-model)](https://bundlephobia.com/result?p=@tarocch1/use-model)
 [![GitHub](https://img.shields.io/github/license/tarocch1/use-model)](https://github.com/Tarocch1/use-model/blob/master/LICENSE)
+![Test Workflow](https://github.com/Tarocch1/use-model/workflows/Test%20Workflow/badge.svg)
 
 ## Install
 
