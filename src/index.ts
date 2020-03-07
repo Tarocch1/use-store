@@ -1,65 +1,64 @@
 import { useState, useEffect, Dispatch } from 'react';
 
 interface Model {
-  model: any;
-  state: any;
+  proxy: any;
   setters: Dispatch<any>[];
 }
 export interface SetModel {
-  (model: any): void;
+  (Model: new () => any): void;
 }
 export interface GetModel {
-  <T>(model: T): T;
+  <T>(Model: new () => T): T;
 }
 export interface UseModel {
-  <T>(model: T, noRender?: boolean): T;
+  <T>(Model: new () => T, noRender?: boolean): T;
 }
 
-const models: WeakMap<any, Model> = new WeakMap();
+const models: Map<new () => any, Model> = new Map();
 
-export const setModel: SetModel = model => {
-  if (typeof model !== 'object') {
-    throw new Error('Model must be an object');
+export const setModel: SetModel = Model => {
+  if (typeof Model !== 'function') {
+    throw new Error('Model must be a constructor.');
   }
-  if (models.has(model)) return;
-  const state: any = {};
-  for (let key in model) {
-    if (typeof model[key] !== 'function') {
-      state[key] = model[key];
-      Object.defineProperty(model, key, {
-        get: function() {
-          return models.get(model)!.state[key];
-        },
-        set: function(value) {
-          const { state, setters } = models.get(model)!;
-          state[key] = value;
-          setters.forEach(setter => setter({ ...state }));
-        },
+  if (models.has(Model)) return;
+  const proxy = new Proxy(new Model(), {
+    get: function(target, prop, receiver) {
+      if (typeof target[prop] === 'function') {
+        return target[prop].bind(receiver);
+      }
+      return target[prop];
+    },
+    set: function(target, prop, value) {
+      target[prop] = value;
+      const { setters } = models.get(Model)!;
+      setters.forEach(setter => {
+        setter({ [prop]: value });
       });
-    }
-  }
-  models.set(model, { model, state, setters: [] });
+      return true;
+    },
+  });
+  models.set(Model, { proxy, setters: [] });
 };
 
-export const getModel: GetModel = model => {
-  if (typeof model !== 'object') {
-    throw new Error('Model must be an object');
+export const getModel: GetModel = Model => {
+  if (typeof Model !== 'function') {
+    throw new Error('Model must be a constructor.');
   }
-  if (!models.has(model)) {
+  if (!models.has(Model)) {
     throw new Error('Model is not set');
   }
-  return models.get(model)!.model;
+  return models.get(Model)!.proxy;
 };
 
-export const useModel: UseModel = (model, noRender = false) => {
-  if (typeof model !== 'object') {
-    throw new Error('Model must be an object');
+export const useModel: UseModel = (Model, noRender = false) => {
+  if (typeof Model !== 'function') {
+    throw new Error('Model must be a constructor.');
   }
-  if (!models.has(model)) {
+  if (!models.has(Model)) {
     throw new Error('Model is not set');
   }
   const [, setState] = useState();
-  const { setters } = models.get(model)!;
+  const { proxy, setters } = models.get(Model)!;
   useEffect(() => {
     if (noRender) return;
     setters.push(setState);
@@ -68,5 +67,5 @@ export const useModel: UseModel = (model, noRender = false) => {
       setters.splice(index, 1);
     };
   }, []);
-  return model;
+  return proxy;
 };

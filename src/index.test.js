@@ -8,19 +8,18 @@ configure({ adapter: new Adapter() });
 test('Basic Usage', () => {
   class CounterModel1 {
     count = 0;
-    add = () => {
+    add() {
       this.count++;
-    };
+    }
   }
-  const counterModel1 = new CounterModel1();
-  setModel(counterModel1);
+  setModel(CounterModel1);
   function Counter() {
-    const _counterModel = useModel(counterModel1);
+    const counterModel = useModel(CounterModel1);
     return (
       <>
-        <div id="count">{_counterModel.count}</div>
+        <div id="count">{counterModel.count}</div>
         <div>
-          <button onClick={_counterModel.add}>add</button>
+          <button onClick={counterModel.add}>add</button>
         </div>
       </>
     );
@@ -34,20 +33,19 @@ test('Basic Usage', () => {
 test('Async Function', done => {
   class CounterModel2 {
     count = 0;
-    add = async () => {
+    async add() {
       await new Promise(resolve => setTimeout(resolve, 1000));
       this.count++;
-    };
+    }
   }
-  const counterModel2 = new CounterModel2();
-  setModel(counterModel2);
+  setModel(CounterModel2);
   function Counter() {
-    const _counterModel = useModel(counterModel2);
+    const counterModel = useModel(CounterModel2);
     return (
       <>
-        <div id="count">{_counterModel.count}</div>
+        <div id="count">{counterModel.count}</div>
         <div>
-          <button onClick={_counterModel.add}>add</button>
+          <button onClick={counterModel.add}>add</button>
         </div>
       </>
     );
@@ -64,19 +62,18 @@ test('Async Function', done => {
 test('noRender', () => {
   class CounterModel3 {
     count = 0;
-    add = () => {
+    add() {
       this.count++;
-    };
+    }
   }
-  const counterModel3 = new CounterModel3();
-  setModel(counterModel3);
+  setModel(CounterModel3);
   function Counter() {
-    const _counterModel = useModel(counterModel3, true);
+    const counterModel = useModel(CounterModel3, true);
     return (
       <>
-        <div id="count">{_counterModel.count}</div>
+        <div id="count">{counterModel.count}</div>
         <div>
-          <button onClick={_counterModel.add}>add</button>
+          <button onClick={counterModel.add}>add</button>
         </div>
       </>
     );
@@ -90,29 +87,27 @@ test('noRender', () => {
 test('getModel', () => {
   class OtherModel {
     count = 0;
-    add = () => {
+    add() {
       this.count++;
-    };
+    }
   }
-  const otherModel = new OtherModel();
   class CounterModel4 {
     count = 0;
-    add = () => {
-      const _otherModel = getModel(otherModel);
-      _otherModel.add();
-    };
+    add() {
+      const otherModel = getModel(OtherModel);
+      otherModel.add();
+    }
   }
-  const counterModel4 = new CounterModel4();
-  setModel(otherModel);
-  setModel(counterModel4);
+  setModel(OtherModel);
+  setModel(CounterModel4);
   function Counter() {
-    const _otherModel = useModel(otherModel);
-    const _counterModel = useModel(counterModel4);
+    const otherModel = useModel(OtherModel);
+    const counterModel = useModel(CounterModel4);
     return (
       <>
-        <div id="count">{_otherModel.count}</div>
+        <div id="count">{otherModel.count}</div>
         <div>
-          <button onClick={_counterModel.add}>add</button>
+          <button onClick={counterModel.add}>add</button>
         </div>
       </>
     );
@@ -128,20 +123,13 @@ test('Error', () => {
     setModel('Not a model');
   }).toThrow();
 
-  expect(() => {
-    useModel('Not a model');
-  }).toThrow();
-
   class CounterModel5 {
     count = 0;
-    add = () => {
+    add() {
       this.count++;
-    };
+    }
   }
-
-  const counterModel5 = new CounterModel5();
-
   expect(() => {
-    useModel(counterModel5);
+    useModel(CounterModel5);
   }).toThrow();
 });
