@@ -1,0 +1,42 @@
+name: Release Workflow
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  release:
+    name: Release
+    runs-on: ubuntu-latest
+    steps:
+      - id: checkout
+        name: Checkout
+        uses: actions/checkout@master
+      - id: setup_nodejs
+        name: Setup node.js
+        uses: actions/setup-node@master
+        with:
+          node-version: 12
+          registry-url: 'https://registry.npmjs.org'
+      - id: npm_ci
+        name: npm ci
+        run: npm ci
+      - id: npm_test
+        name: Test
+        run: npm test
+      - id: npm_run_build
+        name: Build
+        run: npm run build
+      - id: npm_publish
+        name: Publish
+        run: npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+      - id: create_release
+        name: Create Release
+        uses: actions/create-release@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
