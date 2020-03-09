@@ -1,6 +1,6 @@
 {
   "name": "@tarocch1/use-model",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "A state manager for React Hooks.",
   "license": "MIT",
   "author": "Tarocch1 <huiben.fang@gmail.com> (https://github.com/Tarocch1)",
