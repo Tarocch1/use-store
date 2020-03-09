@@ -20,7 +20,7 @@ import { setModel, useModel } from '@tarocch1/use-model';
 
 class CounterModel {
   count = 0;
-  add() => {
+  add() {
     this.count++;
   }
   async addAsync() {
@@ -35,13 +35,15 @@ function Counter() {
   const counterModel = useModel(CounterModel);
   return (
     <>
-      Count: {counterModel.count}
+      <p>Count: {counterModel.count}</p>
       <button onClick={counterModel.add}>+</button>
       <button onClick={counterModel.addAsync}>+ async</button>
     </>
   );
 }
 ```
+
+[![Edit use-model](https://codesandbox.io/static/img/play-codesandbox.svg)](https://codesandbox.io/s/use-model-7r4q7?fontsize=14&hidenavigation=1&module=%2Fsrc%2FApp.js&theme=dark)
 
 ## Api
 
@@ -78,7 +80,7 @@ function Counter() {
   const counterModel = useModel(CounterModel);
   return (
     <>
-      Count: {otherModel.count}
+      <p>Count: {otherModel.count}</p>
       <button onClick={counterModel.add}>+</button>
     </>
   );
