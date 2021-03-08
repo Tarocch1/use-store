@@ -1,4 +1,4 @@
-# Usestore
+# UseStore
 
 一个基于 React Hooks 的状态管理工具。
 
@@ -45,7 +45,7 @@ function Counter() {
     <>
       <p>Count: {countState.count}</p>
       <button onClick={countAction.plus}>+</button>
-      <button onClick={countAction.addAsync}>+ async</button>
+      <button onClick={countAction.plusAsync}>+ async</button>
       <button onClick={() => countAction.plusSomething(2)}>+2</button>
     </>
   );
@@ -58,3 +58,5 @@ ReactDOM.render(
   container,
 );
 ```
+
+[![Edit use-store](https://codesandbox.io/static/img/play-codesandbox.svg)](https://codesandbox.io/s/use-store-bwmom?fontsize=14&hidenavigation=1&module=/src/App.js&theme=dark&file=/src/App.js)
