@@ -1,9 +1,8 @@
 module.exports = {
-  presets: ['@babel/preset-env', '@babel/preset-typescript'],
+  presets: ['@babel/preset-env', '@babel/preset-react'],
   env: {
     test: {
-      presets: ['@babel/preset-react'],
-      plugins: ['@babel/plugin-transform-runtime', '@babel/plugin-proposal-class-properties'],
+      plugins: ['@babel/plugin-transform-runtime'],
     },
   },
 };
