@@ -7,14 +7,12 @@ function Provider({ store = {}, children }) {
     function () {
       const value = {};
       for (const s in store) {
-        const state = store[s].state;
-        const action = store[s].action;
         const _action = {};
-        for (const a in action) {
-          _action[a] = actionFactory(s, action[a]);
+        for (const a in store[s].action) {
+          _action[a] = actionFactory(s, store[s].action[a]);
         }
         value[s] = {
-          state: state,
+          state: store[s].state,
           action: _action,
         };
       }
@@ -23,25 +21,25 @@ function Provider({ store = {}, children }) {
     [store],
   );
   const [_store, _setStore] = useState(initStore);
-  function _getState(name) {
-    return _store[name].state;
+  function _getState(storeName) {
+    return _store[storeName].state;
   }
-  function _getAction(name) {
-    return _store[name].action;
+  function _getAction(storeName) {
+    return _store[storeName].action;
   }
-  function actionFactory(name, action) {
+  function actionFactory(storeName, action) {
     return function (...args) {
       const newState = action(...args)(_getState, _getAction);
       if (newState instanceof Promise) {
         return Promise.resolve(newState).then(function (newState) {
           _setStore(function (value) {
-            Object.assign(value[name].state, newState);
+            Object.assign(value[storeName].state, newState);
             return { ...value };
           });
         });
       }
       _setStore(function (value) {
-        Object.assign(value[name].state, newState);
+        Object.assign(value[storeName].state, newState);
         return { ...value };
       });
       return;
@@ -50,9 +48,9 @@ function Provider({ store = {}, children }) {
   return <Context.Provider value={_store}>{children}</Context.Provider>;
 }
 
-function useStore(name) {
+function useStore(storeName) {
   const store = useContext(Context);
-  return [store[name].state, store[name].action];
+  return [store[storeName].state, store[storeName].action];
 }
 
 export { Provider, useStore };
