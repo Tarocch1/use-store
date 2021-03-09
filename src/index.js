@@ -32,12 +32,19 @@ function Provider({ store = {}, children }) {
   function actionFactory(name, action) {
     return function (...args) {
       const newState = action(...args)(_getState, _getAction);
-      Promise.resolve(newState).then(function (newState) {
-        _setStore(function (value) {
-          Object.assign(value[name].state, newState);
-          return { ...value };
+      if (newState instanceof Promise) {
+        return Promise.resolve(newState).then(function (newState) {
+          _setStore(function (value) {
+            Object.assign(value[name].state, newState);
+            return { ...value };
+          });
         });
+      }
+      _setStore(function (value) {
+        Object.assign(value[name].state, newState);
+        return { ...value };
       });
+      return;
     };
   }
   return <Context.Provider value={_store}>{children}</Context.Provider>;
