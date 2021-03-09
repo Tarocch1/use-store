@@ -1,22 +1,28 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useMemo } from 'react';
 
 const Context = React.createContext({});
 
 function Provider({ store = {}, children }) {
-  const value = {};
-  for (const s in store) {
-    const state = store[s].state;
-    const action = store[s].action;
-    const _action = {};
-    for (const a in action) {
-      _action[a] = actionFactory(s, action[a]);
-    }
-    value[s] = {
-      state: state,
-      action: _action,
-    };
-  }
-  const [_store, _setStore] = useState(value);
+  const initStore = useMemo(
+    function () {
+      const value = {};
+      for (const s in store) {
+        const state = store[s].state;
+        const action = store[s].action;
+        const _action = {};
+        for (const a in action) {
+          _action[a] = actionFactory(s, action[a]);
+        }
+        value[s] = {
+          state: state,
+          action: _action,
+        };
+      }
+      return value;
+    },
+    [store],
+  );
+  const [_store, _setStore] = useState(initStore);
   function _getState(name) {
     return _store[name].state;
   }
