@@ -1,6 +1,6 @@
 import React, { useState, useContext } from 'react';
 
-let Context = null;
+const Context = React.createContext({});
 
 function Provider({ store = {}, children }) {
   const value = {};
@@ -34,7 +34,6 @@ function Provider({ store = {}, children }) {
       });
     };
   }
-  Context = React.createContext({});
   return <Context.Provider value={_store}>{children}</Context.Provider>;
 }
 
