@@ -27,22 +27,22 @@ function Provider({ store = {}, children }) {
   function _getAction(storeName) {
     return _store[storeName].action;
   }
+  function _setState(storeName, newState) {
+    _setStore(function (value) {
+      Object.assign(value[storeName].state, newState);
+      return { ...value };
+    });
+  }
   function actionFactory(storeName, action) {
+    function setState(newState) {
+      _setState(storeName, newState);
+    }
     return function (...args) {
-      const newState = action(...args)(_getState, _getAction);
-      if (newState instanceof Promise) {
-        return Promise.resolve(newState).then(function (newState) {
-          _setStore(function (value) {
-            Object.assign(value[storeName].state, newState);
-            return { ...value };
-          });
-        });
-      }
-      _setStore(function (value) {
-        Object.assign(value[storeName].state, newState);
-        return { ...value };
+      return action(...args)({
+        getState: _getState,
+        getAction: _getAction,
+        setState,
       });
-      return;
     };
   }
   return <Context.Provider value={_store}>{children}</Context.Provider>;

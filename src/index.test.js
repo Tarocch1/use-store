@@ -9,13 +9,13 @@ test('Basic usage', async () => {
       count: 0,
     },
     action: {
-      plus: () => getState => {
+      plus: () => ({ getState, setState }) => {
         const { count } = getState('countStore');
-        return { count: count + 1 };
+        setState({ count: count + 1 });
       },
-      plusSomething: num => getState => {
+      plusSomething: num => ({ getState, setState }) => {
         const { count } = getState('countStore');
-        return { count: count + num };
+        setState({ count: count + num });
       },
     },
   };
@@ -60,10 +60,10 @@ test('Async action', async () => {
       count: 0,
     },
     action: {
-      plus: () => async getState => {
+      plus: () => async ({ getState, setState }) => {
         await new Promise(resolve => setTimeout(resolve, 1000));
         const { count } = getState('countStore');
-        return { count: count + 1 };
+        setState({ count: count + 1 });
       },
     },
   };
@@ -98,9 +98,9 @@ test('getAction', async () => {
       count: 0,
     },
     action: {
-      plus: () => getState => {
+      plus: () => ({ getState, setState }) => {
         const { count } = getState('countStore');
-        return { count: count + 1 };
+        setState({ count: count + 1 });
       },
     },
   };
@@ -109,7 +109,7 @@ test('getAction', async () => {
       count: 0,
     },
     action: {
-      plus: () => (getState, getAction) => {
+      plus: () => ({ getAction }) => {
         const { plus } = getAction('countStore');
         plus();
       },
