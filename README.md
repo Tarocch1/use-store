@@ -23,18 +23,18 @@ const countStore = {
     count: 0,
   },
   action: {
-    plus: () => getState => {
+    plus: () => ({ getState, setState }) => {
       const { count } = getState('countStore');
-      return { count: count + 1 };
+      setState({ count: count + 1 });
     },
-    plusAsync: () => async getState => {
+    plusAsync: () => async ({ getState, setState }) => {
       await new Promise(resolve => setTimeout(resolve, 1000));
       const { count } = getState('countStore');
-      return { count: count + 1 };
+      setState({ count: count + 1 });
     },
-    plusSomething: num => getState => {
+    plusSomething: num => ({ getState, setState }) => {
       const { count } = getState('countStore');
-      return { count: count + num };
+      setState({ count: count + num });
     },
   },
 };
