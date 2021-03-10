@@ -16,9 +16,9 @@ npm install @tarocch1/use-store
 ## Usage
 
 ```jsx
-import { Provider, useStore } from '@tarocch1/use-store';
+import { Provider, useStore, defineStore } from '@tarocch1/use-store';
 
-const countStore = {
+const countStore = defineStore({
   state: {
     count: 0,
   },
@@ -37,7 +37,7 @@ const countStore = {
       setState({ count: count + num });
     },
   },
-};
+});
 
 function Counter() {
   const [countState, countAction] = useStore('countStore');
