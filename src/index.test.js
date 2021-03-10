@@ -1,10 +1,10 @@
 import React from 'react';
 import { render, fireEvent, waitFor, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
-import { Provider, useStore } from './index';
+import { Provider, useStore, defineStore } from './index';
 
 test('Basic usage', async () => {
-  const countStore = {
+  const countStore = defineStore({
     state: {
       count: 0,
     },
@@ -18,7 +18,7 @@ test('Basic usage', async () => {
         setState({ count: count + num });
       },
     },
-  };
+  });
   function App() {
     const [countState, countAction] = useStore('countStore');
     return (
@@ -55,7 +55,7 @@ test('Basic usage', async () => {
 });
 
 test('Async action', async () => {
-  const countStore = {
+  const countStore = defineStore({
     state: {
       count: 0,
     },
@@ -66,7 +66,7 @@ test('Async action', async () => {
         setState({ count: count + 1 });
       },
     },
-  };
+  });
   function App() {
     const [countState, countAction] = useStore('countStore');
     return (
@@ -93,7 +93,7 @@ test('Async action', async () => {
 });
 
 test('getAction', async () => {
-  const countStore = {
+  const countStore = defineStore({
     state: {
       count: 0,
     },
@@ -103,8 +103,8 @@ test('getAction', async () => {
         setState({ count: count + 1 });
       },
     },
-  };
-  const otherStore = {
+  });
+  const otherStore = defineStore({
     state: {
       count: 0,
     },
@@ -114,7 +114,7 @@ test('getAction', async () => {
         plus();
       },
     },
-  };
+  });
   function App() {
     const [countState] = useStore('countStore');
     const [otherState, otherAction] = useStore('otherStore');

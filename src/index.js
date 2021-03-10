@@ -53,4 +53,8 @@ function useStore(storeName) {
   return [store[storeName].state, store[storeName].action];
 }
 
-export { Provider, useStore };
+function defineStore(store) {
+  return store;
+}
+
+export { Provider, useStore, defineStore };

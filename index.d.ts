@@ -1,55 +1,53 @@
 import * as React from 'react';
 
-export type DefinedState = {
+export type State = {
   [key: string]: any;
 };
 
-export type DefinedAction = {
-  [key: string]: DefinedActionFunction;
+export type Action = {
+  [key: string]: ActionFunc;
 };
 
-export type GetState = <T extends DefinedStore>(
+export type GetState = <T extends Store>(
   storeName: string,
-) => State<T['state']>;
-export type GetAction = <T extends DefinedStore>(
+) => InternalState<T['state']>;
+export type GetAction = <T extends Store>(
   storeName: string,
-) => Action<T['action']>;
-export type SetState = <T extends DefinedStore>(
-  newState: Partial<State<T['state']>>,
+) => InternalAction<T['action']>;
+export type SetState = <T extends Store>(
+  newState: Partial<InternalState<T['state']>>,
 ) => void;
 
-export type DefinedActionFunctionMidArg = {
+export type ActionFuncMidArg = {
   getState?: GetState;
   getAction?: GetAction;
   setState?: SetState;
 };
 
-export type DefinedActionFunction = (
-  ...args: any[]
-) => (arg: DefinedActionFunctionMidArg) => void;
+export type ActionFunc = (...args: any[]) => (arg: ActionFuncMidArg) => any;
 
-export type DefinedStore = {
-  state: DefinedState;
-  action: DefinedAction;
+export type Store = {
+  state: State;
+  action: Action;
 };
 
-export type State<T extends DefinedState> = {
+export type InternalState<T extends State> = {
   [key in keyof T]: T[key];
 };
 
-export type Action<T extends DefinedAction> = {
+export type InternalAction<T extends Action> = {
   [key in keyof T]: (
     ...args: Parameters<T[key]>
   ) => ReturnType<ReturnType<T[key]>>;
 };
 
-export type Store<T extends DefinedStore> = {
-  state: State<T['state']>;
-  action: Action<T['action']>;
+export type InternalStore<T extends Store> = {
+  state: InternalState<T['state']>;
+  action: InternalAction<T['action']>;
 };
 
 export interface RootStore {
-  [key: string]: DefinedStore;
+  [key: string]: Store;
 }
 
 export interface ProviderProps {
@@ -59,6 +57,8 @@ export interface ProviderProps {
 
 export const Provider: React.FC<ProviderProps>;
 
-export function useStore<T extends DefinedStore>(
+export function useStore<T extends Store>(
   storeName: string,
-): [State<T['state']>, Action<T['action']>];
+): [InternalState<T['state']>, InternalAction<T['action']>];
+
+export function defineStore<T extends Store>(store: T): T;
