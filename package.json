@@ -1,6 +1,6 @@
 {
   "name": "@tarocch1/use-store",
-  "version": "3.1.0",
+  "version": "3.2.0",
   "description": "A state manager for React Hooks.",
   "license": "MIT",
   "author": "Tarocch1 <huiben.fang@gmail.com> (https://github.com/Tarocch1)",
