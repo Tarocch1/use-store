@@ -19,9 +19,9 @@ export type SetState = <T extends Store>(
 ) => void;
 
 export type ActionFuncMidArg = {
-  getState?: GetState;
-  getAction?: GetAction;
-  setState?: SetState;
+  getState: GetState;
+  getAction: GetAction;
+  setState: SetState;
 };
 
 export type ActionFunc = (...args: any[]) => (arg: ActionFuncMidArg) => any;
