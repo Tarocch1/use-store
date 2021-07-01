@@ -15,7 +15,7 @@ jobs:
         uses: actions/checkout@v2.3.4
       - id: setup_nodejs
         name: Setup node.js
-        uses: actions/setup-node@v2.1.5
+        uses: actions/setup-node@v2.2.0
         with:
           node-version: '14.x'
       - id: npm_ci
