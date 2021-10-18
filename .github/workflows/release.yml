@@ -11,7 +11,7 @@ jobs:
     steps:
       - id: checkout
         name: Checkout
-        uses: actions/checkout@v2.3.4
+        uses: actions/checkout@v2.3.5
       - id: setup_nodejs
         name: Setup node.js
         uses: actions/setup-node@v2.4.1
